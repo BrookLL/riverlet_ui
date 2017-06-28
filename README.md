@@ -1,3 +1,3 @@
 # riverlet_ui
-一些UI组件
-@auther liujian
+@auther: liujian
+@desc: 一些常见的UI组件，内容正在丰富中
