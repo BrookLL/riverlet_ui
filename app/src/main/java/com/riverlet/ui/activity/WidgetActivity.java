@@ -1,12 +1,12 @@
-package com.liu.riverlet_ui.ui.activity;
+package com.riverlet.ui.activity;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.liu.riverlet_ui.R;
-import com.liu.riverlet_ui.ui.base.BaseActivity;
-import com.liu.riverlet_ui.ui.fragment.WidgetFragment;
+import com.liu.riverlet.R;
+import com.riverlet.ui.base.BaseActivity;
+import com.riverlet.ui.fragment.WidgetFragment;
 import com.liu.riverletui.widget.RingView;
 
 import java.util.ArrayList;

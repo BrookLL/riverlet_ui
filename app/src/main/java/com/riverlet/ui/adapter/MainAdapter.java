@@ -1,4 +1,4 @@
-package com.liu.riverlet_ui.ui.adapter;
+package com.riverlet.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.liu.riverlet_ui.R;
-import com.liu.riverlet_ui.ui.adapter.listener.OnItemClickListner;
+import com.liu.riverlet.R;
+import com.riverlet.ui.adapter.listener.OnItemClickListner;
 
 import java.util.List;
 

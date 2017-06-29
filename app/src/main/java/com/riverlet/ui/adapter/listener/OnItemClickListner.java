@@ -1,4 +1,4 @@
-package com.liu.riverlet_ui.ui.adapter.listener;
+package com.riverlet.ui.adapter.listener;
 
 import android.view.View;
 

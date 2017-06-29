@@ -1,13 +1,14 @@
-package com.liu.riverlet_ui.ui.activity;
+package com.riverlet.ui.activity;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.liu.riverlet_ui.R;
-import com.liu.riverlet_ui.ui.adapter.MainAdapter;
-import com.liu.riverlet_ui.ui.adapter.listener.OnItemClickListner;
-import com.liu.riverlet_ui.ui.base.BaseActivity;
+import com.liu.riverlet.R;
+import com.riverlet.ui.adapter.MainAdapter;
+import com.riverlet.ui.adapter.listener.OnItemClickListner;
+import com.riverlet.ui.base.BaseActivity;
 import com.liu.riverletui.widget.RingView;
 
 import java.util.Arrays;
@@ -33,13 +34,14 @@ public class MainActivity extends BaseActivity implements OnItemClickListner {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MainAdapter adapter = new MainAdapter(this, datas);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListner(this);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        switch (position){
+        switch (position) {
             case 0:
-
+                startActivity(new Intent(this, WidgetActivity.class));
                 break;
         }
     }

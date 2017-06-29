@@ -1,4 +1,4 @@
-package com.liu.riverlet_ui.ui.fragment;
+package com.riverlet.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.liu.riverlet_ui.R;
+import com.liu.riverlet.R;
 
 
 public class WidgetFragment extends Fragment {
@@ -38,6 +38,6 @@ public class WidgetFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         FrameLayout viewparent = (FrameLayout) view.findViewById(R.id.viewparent);
-        viewparent.addView(view);
+        viewparent.addView(this.view);
     }
 }

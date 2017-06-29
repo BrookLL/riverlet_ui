@@ -1,4 +1,4 @@
-package com.liu.riverlet_ui.ui.base;
+package com.riverlet.ui.base;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;

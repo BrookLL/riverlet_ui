@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:padding="20dp"
-    tools:context="com.liu.riverlet_ui.ui.fragment.WidgetFragment">
+    tools:context="com.riverlet.ui.fragment.WidgetFragment">
 
     <FrameLayout
         android:id="@+id/viewparent"
