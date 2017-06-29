@@ -19,15 +19,53 @@ import android.view.animation.AccelerateInterpolator;
 
 public class RingView extends View {
 
+    /**
+     * 默认颜色
+     */
+    private static final int[] DEFAULT_COLOR = new int[]{0xff82B8FF, 0xffFF7F78, 0xffFFAE72, 0xff74D1B1, 0xffC38AFC};
+    /**
+     * 圆环半径，以内环算
+     */
     private int innerRadius;
+    /**
+     * 圆环厚度
+     */
     private int ringWidth;
+    /**
+     * 画笔数组
+     */
     private Paint[] paints;
+    /**
+     * 画笔数组对应的颜色
+     */
+    private int[] colors = DEFAULT_COLOR;
+    /**
+     * 圆环圆心x坐标
+     */
     private int centerX;
+    /**
+     * 圆环圆心y坐标
+     */
     private int centerY;
+    /**
+     * 圆环范围
+     */
     private RectF oval;
+    /**
+     * 每个数据对应的角度
+     */
     private int[] angles;
-    private int[] colors = new int[]{0xff82B8FF, 0xffFF7F78, 0xffFFAE72, 0xff74D1B1, 0xffC38AFC};
+    /**
+     * 数据
+     */
+    private float[] datas;
+    /**
+     * 动画用的进度
+     */
     private float progress;
+    /**
+     * 动画
+     */
     private ObjectAnimator animator;
 
     public RingView(Context context) {
@@ -40,15 +78,19 @@ public class RingView extends View {
 
     public RingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initAnimator();
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        initRectF(w, h);
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        initRectF(getMeasuredWidth(), getMeasuredHeight());
     }
 
     private void initRectF(int w, int h) {
+        if (w == 0 && h == 0) {
+            return;
+        }
         centerX = (int) ((float) w / 2);
         centerY = (int) ((float) h / 2);
         innerRadius = (int) ((float) w / 2 / 89 * 64);
@@ -57,6 +99,36 @@ public class RingView extends View {
     }
 
     private void initData() {
+        if (datas == null) {
+            angles = null;
+        } else {
+            float total = 0;
+            for (float data : datas) {
+                total += data;
+            }
+            if (total <= 0) {
+                angles = null;
+            } else {
+                angles = new int[datas.length];
+                int sumAngles = 0;
+                for (int i = 0; i < datas.length; i++) {
+                    float angle;
+                    if (i == datas.length - 1) {
+                        angles[i] = 360 - sumAngles;
+                        Log.v("setData", angles[i] + "");
+                    } else {
+                        angle = datas[i] / total * 360;
+                        if (angle < 1) {
+                            angles[i] = 1;
+                        } else {
+                            angles[i] = Math.round(angle);
+                        }
+                        sumAngles += angles[i];
+                        Log.v("setData", angles[i] + "");
+                    }
+                }
+            }
+        }
         if (angles != null) {
             //用于定义的圆弧的形状和大小的界限
             paints = new Paint[angles.length];
@@ -69,7 +141,7 @@ public class RingView extends View {
                 paints[i] = paint;
             }
         }
-        initAnimator();
+        animStart();
     }
 
     private void initAnimator() {
@@ -79,16 +151,15 @@ public class RingView extends View {
             animator.setDuration(800);
             animator.setInterpolator(new AccelerateInterpolator());
             animator.start();
-        } else {
-            animStart();
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        initRectF(getWidth(), getHeight());
-        canvas.save();
+        if (oval == null) {
+            initRectF(getWidth(), getHeight());
+        }
         int lastAngle = 0;
         int nums = angles == null ? 0 : angles.length;
         if (nums > 0) {
@@ -109,7 +180,6 @@ public class RingView extends View {
             paint.setAntiAlias(true);
             canvas.drawArc(oval, 270, 360 * progress + 1, false, paint);
         }
-        canvas.restore();
     }
 
     public float getProgress() {
@@ -121,8 +191,10 @@ public class RingView extends View {
         this.progress = progress;
     }
 
+
     public void animStart() {
         if (animator == null) {
+            initAnimator();
             return;
         }
         if (animator.isStarted()) {
@@ -132,37 +204,19 @@ public class RingView extends View {
     }
 
     public void setData(float[] datas) {
-        if (datas == null) {
-            angles = null;
-        } else {
-            float total = 0;
-            for (float data : datas) {
-                total += data;
-            }
-            if (total<=0){
-                angles = null;
-                initData();
-                return;
-            }
-            angles = new int[datas.length];
-            int sumAngles = 0;
-            for (int i = 0; i < datas.length; i++) {
-                float angle;
-                if (i == datas.length - 1) {
-                    angles[i] = 360 - sumAngles;
-                    Log.v("setData",angles[i]+"");
-                } else {
-                     angle = datas[i] / total * 360;
-                    if (angle < 1) {
-                        angles[i] = 1;
-                    }else {
-                        angles[i] = Math.round(angle);
-                    }
-                    sumAngles += angles[i];
-                    Log.v("setData",angles[i]+"");
-                }
-            }
-        }
+        this.datas = datas;
         initData();
+    }
+
+    public int[] getColors() {
+        return colors;
+    }
+
+    public void setColors(int[] colors) {
+        this.colors = colors;
+    }
+
+    public void setAnimator(ObjectAnimator animator) {
+        this.animator = animator;
     }
 }
