@@ -33,4 +33,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void startActivity(Class<? extends BaseActivity> activityClass){
         startActivity(new Intent(this,activityClass));
     }
+
+
 }
