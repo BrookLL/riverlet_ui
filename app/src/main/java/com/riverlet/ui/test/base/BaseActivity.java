@@ -1,5 +1,6 @@
-package com.riverlet.ui.base;
+package com.riverlet.ui.test.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -28,5 +29,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public View bindId(@IdRes int id){
         return findViewById(id);
+    }
+    protected void startActivity(Class<? extends BaseActivity> activityClass){
+        startActivity(new Intent(this,activityClass));
     }
 }

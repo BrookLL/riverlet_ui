@@ -1,4 +1,4 @@
-package com.liu.riverletui.widget;
+package com.riverlet.ui.widget;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;

@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.liu.riverlet">
+    package="com.riverlet.ui.test">
 
     <application
+        android:name=".app.RiverletUIApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.riverlet.ui.activity.MainActivity">
+        <activity
+            android:name="com.riverlet.ui.test.activity.MainActivity"
+            android:label="RiverletUI展示">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.riverlet.ui.activity.WidgetActivity"/>
+        <activity
+            android:name="com.riverlet.ui.test.activity.WidgetActivity"
+            android:label="UI控件散件" />
+        <activity
+            android:name="com.riverlet.ui.test.activity.LoadingViewActivity"
+            android:label="LoadingView" />
     </application>
 
 </manifest>
