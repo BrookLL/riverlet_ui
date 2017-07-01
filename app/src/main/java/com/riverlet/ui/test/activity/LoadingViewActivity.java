@@ -7,6 +7,7 @@ import com.riverlet.ui.test.R;
 import com.riverlet.ui.test.adapter.LoadingAdapter;
 import com.riverlet.ui.test.base.BaseActivity;
 import com.riverlet.ui.widget.loading.LoadingView;
+import com.riverlet.ui.widget.loading.SimpleLoadingView;
 import com.riverlet.ui.widget.loading.ThreeBallLoadingView;
 import com.riverlet.ui.widget.recycler.GridDivider;
 
@@ -33,6 +34,8 @@ public class LoadingViewActivity extends BaseActivity {
     @Override
     protected void initData() {
         loadingViewList.add(new ThreeBallLoadingView(this));
+        SimpleLoadingView simpleLoadingView = new SimpleLoadingView(this);
+        loadingViewList.add(simpleLoadingView);
         LoadingAdapter adapter = new LoadingAdapter(this, loadingViewList);
         recyclerView.setAdapter(adapter);
     }

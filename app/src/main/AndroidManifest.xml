@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.riverlet.ui.test.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="RiverletUI展示">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,11 +20,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.riverlet.ui.test.activity.WidgetActivity"
+            android:name=".activity.WidgetActivity"
             android:label="UI控件散件" />
         <activity
-            android:name="com.riverlet.ui.test.activity.LoadingViewActivity"
+            android:name=".activity.LoadingViewActivity"
             android:label="LoadingView" />
+        <activity android:name=".activity.CalendarActivity"></activity>
     </application>
 
 </manifest>

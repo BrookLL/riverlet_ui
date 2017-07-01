@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 
 import com.riverlet.ui.util.DensityUtil;
 import com.riverlet.ui.widget.loading.LoadingView;
+import com.riverlet.ui.widget.loading.SimpleLoadingView;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class LoadingAdapter extends RecyclerView.Adapter<LoadingAdapter.LoadingV
     @Override
     public LoadingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,DensityUtil.dip2px(150)));
+        linearLayout.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(150)));
         linearLayout.setBackgroundColor(0xf0f0f0f0);
         linearLayout.setGravity(Gravity.CENTER);
         return new LoadingViewHolder(linearLayout);
@@ -38,8 +39,12 @@ public class LoadingAdapter extends RecyclerView.Adapter<LoadingAdapter.LoadingV
 
     @Override
     public void onBindViewHolder(LoadingViewHolder holder, int position) {
-        holder.parent.addView(viewList.get(position), layoutParams);
-        viewList.get(position).animStart();
+        LoadingView loadingView = viewList.get(position);
+        holder.parent.addView(loadingView, layoutParams);
+        loadingView.animStart();
+        if (loadingView instanceof SimpleLoadingView){
+            holder.parent.setBackgroundColor(0xff199dff);
+        }
     }
 
     @Override

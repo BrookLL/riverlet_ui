@@ -22,4 +22,9 @@ public class DensityUtil {
         final float scale = RiverletUI.get().getContext().getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
+
+    public static int sp2px(float spValue) {
+        final float fontScale = RiverletUI.get().getContext().getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
+    }
 }

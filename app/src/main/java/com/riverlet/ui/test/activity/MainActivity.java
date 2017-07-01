@@ -20,7 +20,8 @@ public class MainActivity extends BaseActivity implements OnItemClickListner {
     private RecyclerView recyclerView;
     private List<String> datas = Arrays.asList(
             RingView.class.getSimpleName(),
-            LoadingView.class.getSimpleName()
+            LoadingView.class.getSimpleName(),
+            "Calendar"
     );
 
     @Override
@@ -51,6 +52,9 @@ public class MainActivity extends BaseActivity implements OnItemClickListner {
                 break;
             case 1:
                 startActivity(LoadingViewActivity.class);
+                break;
+            case 2:
+                startActivity(CalendarActivity.class);
                 break;
         }
     }
