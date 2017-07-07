@@ -11,6 +11,7 @@ import com.riverlet.ui.test.adapter.listener.OnItemClickListner;
 import com.riverlet.ui.test.base.BaseActivity;
 import com.riverlet.ui.widget.RingView;
 import com.riverlet.ui.widget.loading.LoadingView;
+import com.riverlet.ui.widget.recycler.ElasticRecyclerView;
 import com.riverlet.ui.widget.recycler.ListDivider;
 
 import java.util.Arrays;
@@ -33,7 +34,7 @@ public class MainActivity extends BaseActivity implements OnItemClickListner {
 
     @Override
     protected void initView() {
-        recyclerView = (RecyclerView) bindId(R.id.recyclerView);
+        recyclerView = ((ElasticRecyclerView) bindId(R.id.recyclerView)).getRecyclerView();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new ListDivider(1, "#ffffff"));
     }
@@ -67,7 +68,7 @@ public class MainActivity extends BaseActivity implements OnItemClickListner {
     protected void goWidgetActivity(int page) {
         Intent intent = new Intent(this, WidgetActivity.class);
         intent.putExtra(WidgetActivity.PAGE, page);
-        intent.putExtra(WidgetActivity.TITLE,datas.get(page+2));
+        intent.putExtra(WidgetActivity.TITLE, datas.get(page + 2));
         startActivity(intent);
     }
 }
