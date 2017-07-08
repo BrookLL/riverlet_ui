@@ -35,13 +35,7 @@ android {
                     output.outputFile = new File(parent, releaseApkName)
                 }
             }
-            if (variant.buildType.name.equals('debug')) {
-                variant.outputs.each { output ->
-                    def parent = './apk/'
-                    def releaseApkName = 'RiverletUI_debug.apk'
-                    output.outputFile = new File(parent, releaseApkName)
-                }
-            }
+            
         }
 
     }

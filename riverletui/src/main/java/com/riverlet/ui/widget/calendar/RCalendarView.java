@@ -23,11 +23,11 @@ import java.util.TimeZone;
  * DATE:16/9/18.
  * Time:上午10:50
  */
-public class RCalendarView extends View implements View.OnTouchListener {
+public class RCalendarView extends View {
     /**
      * 记录日期选定的索引
      */
-    private static Calendar selectDay = Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00"));
+    private static Calendar selectCalendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00"));
     public static final int TEXT_COLOR = Color.BLACK;
 
     public static final int BACKGROUND_COLOR = Color.WHITE;
@@ -41,18 +41,16 @@ public class RCalendarView extends View implements View.OnTouchListener {
 
     private int selectedMonth;
 
-    private int screenWidth;
-
     private int[] date = new int[42];
     /**
      * 本月第一日的索引
      */
-    private int curStartIndex;
+    private int startIndex;
 
     /**
      * 本月最后一日的索引
      */
-    private int curEndIndex;
+    private int endIndex;
     /**
      * 今天的索引
      */
@@ -62,7 +60,7 @@ public class RCalendarView extends View implements View.OnTouchListener {
     /**
      * 记录日期选定的索引数组
      */
-    private List<Integer> markIndexs = new ArrayList<>();
+    private int[] markIndexs;
 
     /**
      * 记录在ACTION_DOWN实践中点击的date索引
@@ -112,18 +110,23 @@ public class RCalendarView extends View implements View.OnTouchListener {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(dm);
-        screenWidth = dm.widthPixels;
+        int screenWidth = dm.widthPixels;
 
-        /**
-         * 计算单个日期大小
-         */
-        cellWidth = screenWidth / 7f;
-        cellHeight = cellWidth * 0.7f;
+        computeCell(screenWidth);
 
         setBackgroundColor(backgroundColor);
 
-        setOnTouchListener(this);
+        initPaint();
+        initial();
+    }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        computeCell(w);
+    }
+
+    private void initPaint() {
         /**
          * 初始化文字画笔
          */
@@ -141,10 +144,6 @@ public class RCalendarView extends View implements View.OnTouchListener {
         whitePaint.setTextSize(cellHeight * 0.4f);
         blackPaint = getPaint(Color.BLACK);
         blackPaint.setTextSize(cellHeight * 0.4f);
-//
-//        bluePaint = getPaint(Color.rgb(92, 158, 237));
-//
-//        grayPaint = getPaint(Color.rgb(200, 200, 200));
 
         todayBgPaint = getPaint(0xffd0d0d0);
         todayBgPaint.setStrokeWidth(3);
@@ -153,8 +152,14 @@ public class RCalendarView extends View implements View.OnTouchListener {
 
         selectedDayTextPaint = getPaint(Color.WHITE);
         selectedDayTextPaint.setTextSize(cellHeight * 0.4f);
+    }
 
-        initial();
+    /**
+     * 计算单个日期大小
+     */
+    private void computeCell(int width) {
+        cellWidth = width / 7f;
+        cellHeight = cellWidth * 0.7f;
     }
 
     private void initial() {
@@ -167,18 +172,17 @@ public class RCalendarView extends View implements View.OnTouchListener {
             monthStart = 0;
         }
 
-        curStartIndex = monthStart;
+        startIndex = monthStart;
         date[monthStart] = 1;
         int daysOfMonth = daysOfCurrentMonth();
         for (int i = 1; i < daysOfMonth; i++) {
             date[monthStart + i] = i + 1;
         }
-        curEndIndex = monthStart + daysOfMonth;
+        endIndex = monthStart + daysOfMonth;
 
         if (calendar.get(Calendar.YEAR) == Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00")).get(Calendar.YEAR)
                 && calendar.get(Calendar.MONTH) == Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00")).get(Calendar.MONTH)) {
             todayIndex = Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00")).get(Calendar.DAY_OF_MONTH) + monthStart - 1;
-//            selectedIndex = selectedIndex==-1?todayIndex:-1;
         } else {
             todayIndex = -1;
         }
@@ -186,30 +190,37 @@ public class RCalendarView extends View implements View.OnTouchListener {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+        drawDate(canvas);
+    }
 
-        super.onDraw(canvas);
-
-        for (int i = curStartIndex; i < curEndIndex; i++) {
-            textPaint = blackPaint;
+    private void drawDate(Canvas canvas) {
+        for (int i = startIndex; i < endIndex; i++) {
+            textPaint = blackPaint;//文字颜色默认为黑色
             if (i == todayIndex) {
+                //如果是今天的索引，绘制背景圆圈
                 drawCircle(canvas, i, todayBgPaint, cellHeight * 0.48f);
+                textPaint = whitePaint;
             }
-
-            if (calendar.get(Calendar.YEAR) == selectDay.get(Calendar.YEAR) && calendar.get(Calendar.MONTH) == selectDay.get(Calendar.MONTH) && i == selectDay.get(Calendar.DATE) + curStartIndex - 1) {
+            if (i == actionDownIndex) {
+                //如果是今天的索引，绘制背景圆圈
                 drawCircle(canvas, i, selectedDayBgPaint, cellHeight * 0.48f);
                 textPaint = whitePaint;
             }
 
-            for (int j = 0; j < markIndexs.size(); j++) {
-                if (i == markIndexs.get(j) + curStartIndex - 1) {
-                    drawPoint(canvas, i, selectedDayBgPaint);
+            if (markIndexs != null) {
+                for (int j = 0; j < markIndexs.length; j++) {
+                    if (i == markIndexs[j] + startIndex - 1) {
+                        drawPoint(canvas, i, selectedDayBgPaint);
+                    }
                 }
             }
 
             drawText(canvas, i, textPaint, "" + date[i]);
         }
     }
+
 
     /**
      * 绘制圆
@@ -272,7 +283,7 @@ public class RCalendarView extends View implements View.OnTouchListener {
      * @return
      */
     private boolean isIllegalIndex(int i) {
-        return i < curStartIndex || i >= curEndIndex;
+        return i < startIndex || i >= endIndex;
     }
 
     /**
@@ -306,9 +317,8 @@ public class RCalendarView extends View implements View.OnTouchListener {
         return daysOfMonth;
     }
 
-
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
         switch (event.getAction()) {
@@ -317,25 +327,36 @@ public class RCalendarView extends View implements View.OnTouchListener {
                 if (!isIllegalIndex(index)) {
                     actionDownIndex = index;
                     invalidate();
+                    return true;
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                int actionUpIndex = getIndexByCoordinate(x, y);
-                if (!isIllegalIndex(actionUpIndex)) {
-                    if (actionDownIndex == actionUpIndex) {
-                        actionDownIndex = -1;
-                        int day = date[actionUpIndex];
-                        if (onItemClickListener != null) {
-                            selectDay.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), day);
-                            onItemClickListener.onItemClick(day, selectDay, markIndexs.indexOf(day) != -1);
-                        }
-                        invalidate();
-                    }
+                int day = date[actionDownIndex];
+                if (onItemClickListener != null) {
+                    selectCalendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), day);
+                    onItemClickListener.onItemClick(day, selectCalendar, isMarked(day));
                 }
+                invalidate();
                 break;
         }
-        return true;
+        return super.onTouchEvent(event);
     }
+
+    /**
+     * 判断是否是标记的一天
+     *
+     * @param day
+     * @return
+     */
+    private boolean isMarked(int day) {
+        for (int markIndex : markIndexs) {
+            if (day == markIndex) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * 根据左边计算date[]的索引
@@ -374,17 +395,49 @@ public class RCalendarView extends View implements View.OnTouchListener {
         this.onRefreshListener = onRefreshListener;
     }
 
-    public void setMarkIndexs(List<Integer> markIndexs) {
+    public void setMarkIndexs(int[] markIndexs) {
         this.markIndexs = markIndexs;
         invalidate();
     }
 
-    public void refresh(int year, int month) {
+    public void setMarkDays(int[] markDays) {
+        markIndexs = new int[markDays.length];
+        for (int i = 0; i < markDays.length; i++) {
+            markIndexs[i] = markDays[i] + startIndex - 1;
+        }
+        invalidate();
+    }
+
+    public void setMarkDate(Calendar[] calendars) {
+        List<Integer> markList = new ArrayList<>();
+        for (Calendar calendar : calendars) {
+            if (calendar.get(Calendar.YEAR) == this.calendar.get(Calendar.YEAR)
+                    && calendar.get(Calendar.MONTH) == this.calendar.get(Calendar.MONTH)) {
+                markList.add(calendar.get(Calendar.DATE));
+            }
+        }
+        markIndexs = new int[markList.size()];
+        for (int i = 0; i < markList.size(); i++) {
+            markIndexs[i] = markList.get(i) + startIndex - 1;
+        }
+        invalidate();
+    }
+
+    public void gotoDate(int year, int month) {
         selectedYear = year;
         selectedMonth = month;
         calendar.set(Calendar.YEAR, selectedYear);
         calendar.set(Calendar.MONTH, selectedMonth - 1);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
+        initial();
+        invalidate();
+        if (onRefreshListener != null) {
+            onRefreshListener.onRefresh();
+        }
+    }
+
+    public void gotoDate(Calendar calendar) {
+        this.calendar = calendar;
         initial();
         invalidate();
         if (onRefreshListener != null) {
@@ -403,6 +456,6 @@ public class RCalendarView extends View implements View.OnTouchListener {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        selectDay = Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00"));
+        selectCalendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00"));
     }
 }
