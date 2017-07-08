@@ -22,9 +22,10 @@ public class MainActivity extends BaseActivity implements OnItemClickListner {
     private RecyclerView recyclerView;
     public List<String> datas = Arrays.asList(
             LoadingView.class.getSimpleName(),
-            "Calendar",
-            RingView.class.getSimpleName(),
-            "BetterRadio and SwitchView"
+            "Calendar(日历)",
+            "DrawingView(画板)",
+            RingView.class.getSimpleName()+"环形图",
+            "BetterRadio and SwitchView(选项卡和开关)"
     );
 
     @Override
@@ -57,9 +58,12 @@ public class MainActivity extends BaseActivity implements OnItemClickListner {
                 startActivity(CalendarActivity.class);
                 break;
             case 2:
-                goWidgetActivity(0);
+                startActivity(DrawingviewActivity.class);
                 break;
             case 3:
+                goWidgetActivity(0);
+                break;
+            case 4:
                 goWidgetActivity(1);
                 break;
         }

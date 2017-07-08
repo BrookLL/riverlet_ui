@@ -26,6 +26,9 @@
             android:name=".activity.LoadingViewActivity"
             android:label="LoadingView" />
         <activity android:name=".activity.CalendarActivity"></activity>
+        <activity
+            android:name=".activity.DrawingviewActivity"
+            android:label="画板" />
     </application>
 
 </manifest>
